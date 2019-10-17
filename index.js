@@ -232,7 +232,7 @@ async function _render (view, options, hooks) {
     } else if (isClassComponent(view.tag)) {
       component = new view.tag(vnode)
     } else if (isFunction(view.tag)) {
-      component = view.tag()
+      component = view.tag(view)
     }
 
     if (component) {
