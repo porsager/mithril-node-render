@@ -95,6 +95,7 @@ async function setHooks (component, vnode, hooks) {
     await (component.oninit.call(vnode.state, vnode) || async function () {})
   }
   if (component.onremove) {
+    vnode.state = vnode.state || {}
     hooks.push(component.onremove.bind(vnode.state, vnode))
   }
 }
@@ -188,9 +189,8 @@ async function render (view, attrs, options) {
   })
 
   const result = await _render(view, options, hooks)
-
   hooks.forEach(function (hook) {
-    hook()
+    hook({ state: {} })
   })
 
   return result
@@ -234,7 +234,6 @@ async function _render (view, options, hooks) {
     } else if (isFunction(view.tag)) {
       component = view.tag(view)
     }
-
     if (component) {
       vnode.tag = copy(component)
       vnode.state = omit(component, COMPONENT_PROPS)
